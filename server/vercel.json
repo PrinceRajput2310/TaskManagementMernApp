@@ -1,6 +1,6 @@
 {
   "version": 2,
   "name": "taskmanagement",
-  "builds": [{ "src": "../server/index.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "../server/index.js" }]
+  "builds": [{ "src": "./server/index.js", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "./server/index.js" }]
 }
