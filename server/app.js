@@ -1,18 +1,17 @@
 import express from "express";
 import bodyParser from "body-parser";
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import personRoute from "./routes/todoRoutes.js";
 import userRoute from "./routes/userRoutes.js";
 
-
-
-
 const app = express();
-app.use(cors({
-  origin: 'http://localhost:3000', // frontend URL
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000", // frontend URL
+    credentials: true,
+  })
+);
 app.use(
   bodyParser.urlencoded({
     extended: false,
@@ -25,5 +24,11 @@ app.use(cookieParser());
 // import routes
 app.use("/api/v1", personRoute);
 app.use("/api/v1", userRoute);
+app.get("/", (req, res) => {
+  return res.status(200).json({
+    success: true,
+    message: "Server is working fine",
+  });
+});
 
 export default app;
