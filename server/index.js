@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import dataBaseConnection from "./config/dbConnection.js";
 
 
-dotenv.config({ path: "./server/.env"});
+dotenv.config({ path: ".env"});
 
 // DataBase connection
 dataBaseConnection();
