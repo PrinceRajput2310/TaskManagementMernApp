@@ -6,7 +6,9 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import { Modal } from "antd";
+import { Modal, Input } from "antd";
+
+const { TextArea } = Input;
 
 const DisplayTask = ({ todos, getAllTodos }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -112,39 +114,39 @@ const DisplayTask = ({ todos, getAllTodos }) => {
 
       <Modal
         title="Edit Task"
+        style={{ textAlign: "center", alignItems: "center", fontSize: "22px" }}
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <input
+        <div
+          className="add-todo-container"
           style={{
-            width: "467px",
-            height: "58px",
-            outline: "none",
-            background: "none",
-            borderRadius: "12px",
-            fontSize: "16px",
-            padding: "8px",
+            marginTop: "30px",
+            alignItems: "center",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            maxWidth: "500px",
+            gap: "15px",
+            marginLeft: "auto",
+            marginRight: "auto",
           }}
-          placeholder="Enter Task Title"
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-        />
-        <textarea
-          style={{
-            width: "467px",
-            height: "200px",
-            outline: "none",
-            background: "none",
-            borderRadius: "12px",
-            fontSize: "16px",
-            padding: "8px",
-            margin: "8px",
-          }}
-          placeholder="Enter Task"
-          value={newTodo}
-          onChange={(e) => setNewTodo(e.target.value)}
-        />
+        >
+          <Input
+            style={{ height: "58px" }}
+            placeholder="Enter Task Title"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+          />
+          <TextArea
+            style={{ height: "120px" }}
+            placeholder="Enter Task"
+            value={newTodo}
+            onChange={(e) => setNewTodo(e.target.value)}
+          />
+        </div>
       </Modal>
     </>
   );
