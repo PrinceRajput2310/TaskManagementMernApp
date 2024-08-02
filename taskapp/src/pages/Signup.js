@@ -4,6 +4,7 @@ import axios from "axios";
 import cookie from "js-cookie";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { API_URL } from "../utils/apiEndPoints";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -15,7 +16,7 @@ const Signup = () => {
   const registerUser = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/v1/signup", {
+      const response = await axios.post(`${API_URL}/api/v1/signup`, {
         name,
         email,
         password,
@@ -25,8 +26,8 @@ const Signup = () => {
       if (!token) {
         console.log("Error during Signup , please fill all fields");
       } else {
-        cookie.set("token", token);
-        cookie.set("userId", user._id);
+        cookie.set("token", token, { expires: 2, path: "/" });
+        cookie.set("userId", user._id, { expires: 2, path: "/" });
         navigate("/home");
         console.log("User Registerd Successfully", token);
       }
@@ -42,7 +43,7 @@ const Signup = () => {
         justifyContent: "center",
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop:"10%"
+        marginTop: "10%",
       }}
     >
       <Form>

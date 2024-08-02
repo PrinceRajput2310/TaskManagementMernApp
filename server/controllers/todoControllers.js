@@ -63,6 +63,7 @@ export const searchTodo = async (req, res) => {
     // Use a regular expression to perform a partial match search
     const searchResult = await TodoList.find({
       title: { $regex: title, $options: "i" },
+      user: req.user.id,
     });
 
     if (!searchResult || searchResult.length === 0) {

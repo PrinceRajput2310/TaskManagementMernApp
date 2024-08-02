@@ -24,7 +24,7 @@ const DisplayTask = ({ todos, getAllTodos }) => {
   };
   const handleOk = async () => {
     try {
-      const updateTask = await axios.put(`${API_URL}/update`, {
+      const updateTask = await axios.put(`${API_URL}/api/v1/todo/update`, {
         id: editId,
         title: newTitle,
         content: newTodo,
@@ -42,7 +42,7 @@ const DisplayTask = ({ todos, getAllTodos }) => {
 
   const handleDelete = async (id) => {
     try {
-      const deletedTask = await axios.delete(`${API_URL}/delete`, {
+      const deletedTask = await axios.delete(`${API_URL}/api/v1/todo/delete`, {
         data: {
           id,
         },

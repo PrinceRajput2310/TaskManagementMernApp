@@ -4,6 +4,8 @@ import axios from "axios";
 import cookie from "js-cookie";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { API_URL } from "../utils/apiEndPoints";
+import { LOCALHOST_BACKEND_URL } from "../utils/apiEndPoints";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ const Login = () => {
   const loginUser = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/v1/login", {
+      const response = await axios.post(`${API_URL}/api/v1/login`, {
         email,
         password,
       });
@@ -22,9 +24,12 @@ const Login = () => {
       const userName = user.user.name;
       console.log(" user token", userName);
       if (token) {
-        cookie.set("token", token, { expires: 1 });
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", userName);
+        cookie.set("token", token, { expires: 1, path: "/" });
         cookie.set("user", userName, {
           expires: 1,
+          path: "/",
         });
         navigate("/home");
       } else {
@@ -41,7 +46,7 @@ const Login = () => {
         justifyContent: "center",
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop:"10%"
+        marginTop: "10%",
       }}
     >
       <Form>

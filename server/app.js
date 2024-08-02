@@ -8,10 +8,14 @@ import userRoute from "./routes/userRoutes.js";
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:3000", // frontend URL
+    origin: [
+      "http://localhost:3000",
+      "https://taskmanagement-prince.netlify.app",
+    ],
     credentials: true,
   })
 );
+// app.use(cors());
 app.use(
   bodyParser.urlencoded({
     extended: false,
@@ -29,6 +33,17 @@ app.get("/", (req, res) => {
     success: true,
     message: "Server is working fine",
   });
+});
+
+// Catch-all route
+app.all("*", (req, res) => {
+  res.status(404).send("404: NOT_FOUND");
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
 });
 
 export default app;

@@ -5,6 +5,8 @@ import { API_URL } from "../utils/apiEndPoints";
 import Header from "./Header";
 import { Input, Button } from "antd";
 import DisplayTask from "./DisplayTask";
+import Cookies from "js-cookie";
+import { LOCALHOST_BACKEND_URL } from "../utils/apiEndPoints";
 
 const { TextArea } = Input;
 
@@ -32,14 +34,19 @@ const Home = () => {
   const searchTodo = async (value) => {
     setSearchByTitle(value);
     if (value) {
-      try {
+      try {       
+          const token = localStorage.getItem("token");          
         const response = await axios.post(
-          `${API_URL}/search`,
+          `${API_URL}/api/v1/todo/search`,
           {
             title: value,
           },
           {
             withCredentials: true,
+            headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
           }
         );
         const filterData = response.data.data;
@@ -55,13 +62,24 @@ const Home = () => {
 
   const getAllTodos = async () => {
     try {
-      const response = await axios.get(`${API_URL}/alltodo`, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      setAllTodos(response.data.populatedTodos);
+       const token = localStorage.getItem("token");
+    console.log("token-------", token);
+    const response = await axios.get(`${API_URL}/api/v1/todo/alltodo`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+    setAllTodos(response.data.populatedTodos);
+      // const token=Cookies.get("token");
+      // console.log("token-------",token,)
+      // const response = await axios.get(`${API_URL}/todo/alltodo`, {
+      //   withCredentials: true,
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // });
+      // setAllTodos(response.data.populatedTodos);
     } catch (error) {
       console.log("Error fetching todos:", error);
     }
@@ -69,17 +87,19 @@ const Home = () => {
 
   const addTodo = async () => {
     try {
+       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `${API_URL}/new`,
+        `${API_URL}/api/v1/todo/new`,
         {
           title,
           content: todo,
         },
         {
           withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
+            headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
         }
       );
       console.log("Todo added successfully", response.data);
@@ -93,10 +113,15 @@ const Home = () => {
 
   const getPendingTaskList = async () => {
     try {
+      const token = localStorage.getItem("token");
       const pendingtask = await axios.get(
-        `${API_URL}/category?category=Pending`,
+        `${API_URL}/api/v1/todo/category?category=Pending`,
         {
           withCredentials: true,
+           headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
         }
       );
       const task = await pendingtask.data.task;
@@ -110,10 +135,15 @@ const Home = () => {
 
   const getCompletedTaskList = async () => {
     try {
+      const token = localStorage.getItem("token");
       const pendingtask = await axios.get(
-        `${API_URL}/category?category=Completed`,
+        `${API_URL}/api/v1/todo/category?category=Completed`,
         {
           withCredentials: true,
+           headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
         }
       );
       const task = await pendingtask.data.task;
@@ -127,8 +157,13 @@ const Home = () => {
 
   const getAllTask = async () => {
     try {
-      const alltask = await axios.get(`${API_URL}/taskdetail`, {
+      const token = localStorage.getItem("token");
+      const alltask = await axios.get(`${API_URL}/api/v1/todo/taskdetail`, {
         withCredentials: true,
+        headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
       });
       const task = await alltask.data;
       setTask(task);

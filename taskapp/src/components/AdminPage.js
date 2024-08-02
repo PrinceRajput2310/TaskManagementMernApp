@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
+import { API_URL } from "../utils/apiEndPoints";
 
 const AdminPage = () => {
   const [userListWithTask, setUserListWithtask] = useState([]);
 
   const userListWithTaskCount = async () => {
-    const user = await axios.get("http://localhost:5000/api/v1/allusers", {
+    const user = await axios.get(`${API_URL}/api/v1/allusers`, {
       withCredentials: true,
     });
     const data = await user.data.users;
@@ -41,10 +42,10 @@ const AdminPage = () => {
         </thead>
         <tbody>
           {userListWithTask &&
-            userListWithTask.map(({ name, email, todoCount, _id },index) => {
+            userListWithTask.map(({ name, email, todoCount, _id }, index) => {
               return (
                 <tr key={_id}>
-                  <td>{index+1}</td>
+                  <td>{index + 1}</td>
                   <td>{name}</td>
                   <td>{email}</td>
                   <td>{todoCount}</td>
