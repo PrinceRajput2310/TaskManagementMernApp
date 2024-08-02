@@ -17,7 +17,6 @@ router.route("/todo/new").post(isAuthenticatedUser, addTodo);
 router.route("/todo/alltodo").get(isAuthenticatedUser, getAllTodos);
 router.route("/todo/category").get(isAuthenticatedUser, getTaskByCategory);
 router.route("/todo/taskdetail").get(isAuthenticatedUser, getTotalTask);
-// router.get("/todo/alltodo", getAllTodos);
 router.delete("/todo/delete", deleteTodo);
 router.post("/todo/search", isAuthenticatedUser, searchTodo);
 router.route("/todo/update").put(updateTodo);

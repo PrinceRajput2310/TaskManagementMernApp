@@ -26,6 +26,7 @@ const Signup = () => {
       if (!token) {
         console.log("Error during Signup , please fill all fields");
       } else {
+        localStorage.setItem("token", token);
         cookie.set("token", token, { expires: 2, path: "/" });
         cookie.set("userId", user._id, { expires: 2, path: "/" });
         navigate("/home");

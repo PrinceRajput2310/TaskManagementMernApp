@@ -65,21 +65,13 @@ const Home = () => {
        const token = localStorage.getItem("token");
     console.log("token-------", token);
     const response = await axios.get(`${API_URL}/api/v1/todo/alltodo`, {
+      withCredentials:true,
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       },
     });
     setAllTodos(response.data.populatedTodos);
-      // const token=Cookies.get("token");
-      // console.log("token-------",token,)
-      // const response = await axios.get(`${API_URL}/todo/alltodo`, {
-      //   withCredentials: true,
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // });
-      // setAllTodos(response.data.populatedTodos);
     } catch (error) {
       console.log("Error fetching todos:", error);
     }
