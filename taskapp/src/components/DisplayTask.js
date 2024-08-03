@@ -62,19 +62,15 @@ const DisplayTask = ({ todos, getAllTodos }) => {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const deletedTask = await axios.delete(
-        `${API_URL}/api/v1/todo/delete`,
-        {
-          id,
+      console.log("token inside delete api", token);
+      const deletedTask = await axios.delete(`${API_URL}/api/v1/todo/delete`, {
+        data: { id },
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      });
       getAllTodos();
       console.log("todo deleted Successfully", deletedTask.data);
     } catch (error) {
