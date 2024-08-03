@@ -41,7 +41,10 @@ export const deleteTodo = async (req, res) => {
     return res.send({ message: "Todo id is missing " });
   }
   try {
-    const deletedTodo = await TodoList.findByIdAndDelete({ _id: id });
+    const deletedTodo = await TodoList.findByIdAndDelete({
+      _id: id,
+      user: req.user.id,
+    });
     if (!deletedTodo) {
       return res.status(404).json({ message: "Todo not found" });
     }
@@ -83,13 +86,16 @@ export const searchTodo = async (req, res) => {
 
 export const updateTodo = async (req, res) => {
   try {
-    const { id, title, content } = req.body;
-
+    const { id, title, content, status, priority } = req.body;
+    console.log("----backend", title, content, status, priority);
     const todo = await TodoList.findOneAndUpdate(
       { _id: id },
       {
         title,
         content,
+        status,
+        priority,
+        user: req.user.id,
       },
       {
         new: true,

@@ -5,7 +5,6 @@ import cookie from "js-cookie";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { API_URL } from "../utils/apiEndPoints";
-import { LOCALHOST_BACKEND_URL } from "../utils/apiEndPoints";
 
 const Login = () => {
   const navigate = useNavigate();

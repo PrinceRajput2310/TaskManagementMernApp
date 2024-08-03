@@ -5,7 +5,7 @@ import cookie from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../utils/apiEndPoints";
-import { LOCALHOST_BACKEND_URL } from "../utils/apiEndPoints";
+import { GiNotebook } from "react-icons/gi";
 
 function Header() {
   const navigate = useNavigate();
@@ -37,6 +37,9 @@ function Header() {
           href="#"
           style={{ fontFamily: "cursive", outline: "none", background: "none" }}
         >
+          <span>
+            <GiNotebook />
+          </span>{" "}
           Task Management
         </Navbar.Brand>
         <Dropdown align={"end"} title="Hello">

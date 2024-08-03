@@ -5,8 +5,9 @@ import { API_URL } from "../utils/apiEndPoints";
 import Header from "./Header";
 import { Input, Button } from "antd";
 import DisplayTask from "./DisplayTask";
-import Cookies from "js-cookie";
-import { LOCALHOST_BACKEND_URL } from "../utils/apiEndPoints";
+import { Select } from "antd";
+// import Cookies from "js-cookie";
+// import { LOCALHOST_BACKEND_URL } from "../utils/apiEndPoints";
 
 const { TextArea } = Input;
 
@@ -17,6 +18,8 @@ const Home = () => {
   const [searchByTitle, setSearchByTitle] = useState("");
   const [activeTab, setActiveTab] = useState("alltask");
   const [task, setTask] = useState("");
+  const [taskStatus, setTaskStatus] = useState("");
+  const [taskPriority, setTaskPriority] = useState("");
 
   useEffect(() => {
     getAllTask();
@@ -34,8 +37,8 @@ const Home = () => {
   const searchTodo = async (value) => {
     setSearchByTitle(value);
     if (value) {
-      try {       
-          const token = localStorage.getItem("token");          
+      try {
+        const token = localStorage.getItem("token");
         const response = await axios.post(
           `${API_URL}/api/v1/todo/search`,
           {
@@ -44,9 +47,9 @@ const Home = () => {
           {
             withCredentials: true,
             headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         const filterData = response.data.data;
@@ -62,16 +65,16 @@ const Home = () => {
 
   const getAllTodos = async () => {
     try {
-       const token = localStorage.getItem("token");
-    console.log("token-------", token);
-    const response = await axios.get(`${API_URL}/api/v1/todo/alltodo`, {
-      withCredentials:true,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-    });
-    setAllTodos(response.data.populatedTodos);
+      const token = localStorage.getItem("token");
+      console.log("token-------", token);
+      const response = await axios.get(`${API_URL}/api/v1/todo/alltodo`, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setAllTodos(response.data.populatedTodos);
     } catch (error) {
       console.log("Error fetching todos:", error);
     }
@@ -79,19 +82,21 @@ const Home = () => {
 
   const addTodo = async () => {
     try {
-       const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         `${API_URL}/api/v1/todo/new`,
         {
           title,
           content: todo,
+          status: taskStatus,
+          priority: taskPriority,
         },
         {
           withCredentials: true,
-            headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       console.log("Todo added successfully", response.data);
@@ -110,10 +115,10 @@ const Home = () => {
         `${API_URL}/api/v1/todo/category?category=Pending`,
         {
           withCredentials: true,
-           headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const task = await pendingtask.data.task;
@@ -132,10 +137,10 @@ const Home = () => {
         `${API_URL}/api/v1/todo/category?category=Completed`,
         {
           withCredentials: true,
-           headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const task = await pendingtask.data.task;
@@ -153,9 +158,9 @@ const Home = () => {
       const alltask = await axios.get(`${API_URL}/api/v1/todo/taskdetail`, {
         withCredentials: true,
         headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
       const task = await alltask.data;
       setTask(task);
@@ -181,15 +186,28 @@ const Home = () => {
     }
   };
 
+  const onChange = (value) => {
+    setTaskStatus(value);
+    console.log(`selected ${value}`);
+  };
+  const onSearch = (value) => {
+    console.log("search:", value);
+  };
+
+  const onChangePriority = (value) => {
+    setTaskPriority(value);
+    console.log(`selected ${value}`);
+  };
+  const onSearchPriority = (value) => {
+    console.log("search:", value);
+  };
+
   return (
     <>
       <Header />
       <div
         className="add-todo-container"
         style={{
-          marginTop: "30px",
-          alignItems: "center",
-          textAlign: "center",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -197,19 +215,64 @@ const Home = () => {
           gap: "15px",
           marginLeft: "auto",
           marginRight: "auto",
+          // backgroundColor:'tomato',
+          padding: "20px",
         }}
       >
+        <div>Enter Task Title</div>
         <Input
           style={{ height: "58px" }}
           placeholder="Enter Task Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        <div>Enter Task Content</div>
         <TextArea
           style={{ height: "120px" }}
           placeholder="Enter Task"
           value={todo}
           onChange={(e) => setTodo(e.target.value)}
+        />
+        <Select
+          style={{ height: "58px" }}
+          showSearch
+          placeholder="Select task status"
+          optionFilterProp="label"
+          onChange={onChange}
+          onSearch={onSearch}
+          options={[
+            {
+              value: "Completed",
+              label: "Completed",
+            },
+            {
+              value: "Pending",
+              label: "Pending",
+            },
+          ]}
+        />
+
+        <Select
+          style={{ height: "58px" }}
+          showSearch
+          placeholder="Select task priority"
+          optionFilterProp="label"
+          onChange={onChangePriority}
+          onSearch={onSearchPriority}
+          options={[
+            {
+              value: "Normal",
+              label: "Normal",
+            },
+            {
+              value: "Medium",
+              label: "Medium",
+            },
+            {
+              value: "High",
+              label: "High",
+            },
+          ]}
         />
         <Button
           type="button"
@@ -236,8 +299,16 @@ const Home = () => {
           margin: "20px",
         }}
       >
-        <div style={{ fontSize: "24px", fontFamily: "500" }}>
-          <Button
+        <div
+          style={{
+            fontSize: "24px",
+            fontFamily: "500",
+            display: "flex",
+            flexDirection: "row",
+            gap: "20px",
+          }}
+        >
+          <div
             type="button"
             style={{
               maxWidth: "180px",
@@ -246,12 +317,14 @@ const Home = () => {
               fontSize: "16px",
               fontWeight: "500",
               color: "black",
+              paddingBottom: "8px",
+              borderBottom: activeTab === "alltask" ? "2px solid tomato" : "",
             }}
             onClick={() => setActiveTab("alltask")}
           >
             All Task ({task.totalTask})
-          </Button>
-          <Button
+          </div>
+          <duv
             type="button"
             style={{
               maxWidth: "180px",
@@ -260,12 +333,15 @@ const Home = () => {
               fontSize: "16px",
               fontWeight: "500",
               color: "black",
+              paddingBottom: "8px",
+              borderBottom:
+                activeTab === "pendingtask" ? "2px solid tomato" : "",
             }}
             onClick={() => setActiveTab("pendingtask")}
           >
             Pending Task ({task.pendingTask})
-          </Button>
-          <Button
+          </duv>
+          <div
             type="button"
             style={{
               maxWidth: "180px",
@@ -274,11 +350,14 @@ const Home = () => {
               fontSize: "16px",
               fontWeight: "500",
               color: "black",
+              paddingBottom: "8px",
+              borderBottom:
+                activeTab === "completedtask" ? "2px solid tomato" : "",
             }}
             onClick={() => setActiveTab("completedtask")}
           >
             Completed Task ({task.completedTask})
-          </Button>
+          </div>
         </div>
 
         <div
@@ -290,7 +369,7 @@ const Home = () => {
             type="search"
             value={searchByTitle}
             onChange={(e) => searchTodo(e.target.value)}
-            placeholder="Search task by title name"
+            placeholder="Search task by title"
             className="me-2"
             aria-label="Search"
           />
