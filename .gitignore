@@ -1,0 +1,22 @@
+# Node modules
+/node_modules
+/server/node_modules
+/taskapp/node_modules
+
+# Logs
+logs
+*.log
+
+# Environment variables
+/server/.env
+
+# Build directory
+/taskapp/build
+/server/dist
+
+# Other files and directories to ignore
+*.DS_Store
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
