@@ -1,28 +1,18 @@
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Dropdown from "react-bootstrap/Dropdown";
-import cookie from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { API_URL } from "../utils/apiEndPoints";
 import { GiNotebook } from "react-icons/gi";
+import { useDispatch } from "react-redux";
+import { logoutUserRequest } from "../redux/reduxSlice/userSlice";
 
 function Header() {
   const navigate = useNavigate();
-  const Name = cookie.get("user");
-  const token = localStorage.getItem("token");
-  const logoutUser = async () => {
-    const user = await axios.get(`${API_URL}/api/v1/logout`, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const message = await user.data.message;
-    console.log(message);
-    localStorage.removeItem("token");
-    cookie.remove("token");
+  const dispatch = useDispatch();
+  const Name = localStorage.getItem("user");
+  const logoutUser = () => {
+    dispatch(logoutUserRequest());
+
     navigate("/");
   };
 

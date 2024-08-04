@@ -1,188 +1,83 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Form from "react-bootstrap/Form";
-import { API_URL } from "../utils/apiEndPoints";
 import Header from "./Header";
 import { Input, Button } from "antd";
 import DisplayTask from "./DisplayTask";
 import { Select } from "antd";
-// import Cookies from "js-cookie";
-// import { LOCALHOST_BACKEND_URL } from "../utils/apiEndPoints";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchTaskRequest,
+  newTaskRequest,
+  searchTaskRequest,
+  pendingTaskRequest,
+  completedTaskRequest,
+  allTaskRequest,
+} from "../redux/reduxSlice/taskSlice";
 
 const { TextArea } = Input;
 
 const Home = () => {
-  const [todos, setAllTodos] = useState([]);
   const [title, setTitle] = useState("");
   const [todo, setTodo] = useState("");
   const [searchByTitle, setSearchByTitle] = useState("");
   const [activeTab, setActiveTab] = useState("alltask");
-  const [task, setTask] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [taskPriority, setTaskPriority] = useState("");
+  const dispatch = useDispatch();
+
+  const { data } = useSelector((state) => state.task);
+  const pendingTask = useSelector((state) => state.task);
+  const completedTask = useSelector((state) => state.task);
+  const searchTask = useSelector((state) => state.task);
+  const taskDetail = useSelector((state) => state.task.allTask);
+
+  console.log("task detail", taskDetail);
+  const allTask = searchByTitle
+    ? searchTask.searchTask.data
+    : data.populatedTodos;
 
   useEffect(() => {
-    getAllTask();
+    dispatch(fetchTaskRequest());
+    dispatch(allTaskRequest());
     if (activeTab === "alltask") {
-      getAllTodos();
+      dispatch(fetchTaskRequest());
     }
     if (activeTab === "pendingtask") {
-      getPendingTaskList();
+      dispatch(pendingTaskRequest());
     }
     if (activeTab === "completedtask") {
-      getCompletedTaskList();
+      dispatch(completedTaskRequest());
     }
-  }, [activeTab]);
+  }, [dispatch, activeTab]);
 
   const searchTodo = async (value) => {
     setSearchByTitle(value);
     if (value) {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.post(
-          `${API_URL}/api/v1/todo/search`,
-          {
-            title: value,
-          },
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const filterData = response.data.data;
-        setAllTodos(filterData);
-        console.log("Searched result", filterData);
-      } catch (error) {
-        console.log("Error during search:", error);
-      }
+      dispatch(searchTaskRequest({ value }));
     } else {
-      getAllTodos();
+      dispatch(fetchTaskRequest());
     }
   };
 
-  const getAllTodos = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      console.log("token-------", token);
-      const response = await axios.get(`${API_URL}/api/v1/todo/alltodo`, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setAllTodos(response.data.populatedTodos);
-    } catch (error) {
-      console.log("Error fetching todos:", error);
-    }
-  };
-
-  const addTodo = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${API_URL}/api/v1/todo/new`,
-        {
-          title,
-          content: todo,
-          status: taskStatus,
-          priority: taskPriority,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Todo added successfully", response.data);
-      getAllTodos();
-      setTitle("");
-      setTodo("");
-    } catch (error) {
-      console.log("Error adding todo:", error);
-    }
-  };
-
-  const getPendingTaskList = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const pendingtask = await axios.get(
-        `${API_URL}/api/v1/todo/category?category=Pending`,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const task = await pendingtask.data.task;
-      setAllTodos(task);
-
-      console.log("Pending task", task);
-    } catch (error) {
-      console.log("Error fetching Pending task", error);
-    }
-  };
-
-  const getCompletedTaskList = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const pendingtask = await axios.get(
-        `${API_URL}/api/v1/todo/category?category=Completed`,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const task = await pendingtask.data.task;
-      setAllTodos(task);
-
-      console.log("Pending task", task);
-    } catch (error) {
-      console.log("Error fetching Completed task", error);
-    }
-  };
-
-  const getAllTask = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const alltask = await axios.get(`${API_URL}/api/v1/todo/taskdetail`, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const task = await alltask.data;
-      setTask(task);
-      console.log("Get All Task", task);
-    } catch (error) {
-      console.log("Error fetching Completed task", error);
-    }
+  const addTodo = () => {
+    dispatch(newTaskRequest({ title, todo, taskStatus, taskPriority }));
+    setTodo("");
+    setTitle("");
   };
 
   const renderActiveTabContent = () => {
     switch (activeTab) {
       case "alltask":
-        return <DisplayTask todos={todos} getAllTodos={getAllTodos} />;
+        return <DisplayTask todos={allTask} />;
 
       case "pendingtask":
-        return <DisplayTask todos={todos} getAllTodos={getAllTodos} />;
+        return <DisplayTask todos={pendingTask.pending.task} />;
 
       case "completedtask":
-        return <DisplayTask todos={todos} getAllTodos={getAllTodos} />;
+        return <DisplayTask todos={completedTask.completed.task} />;
 
       default:
-        return <DisplayTask todos={todos} getAllTodos={getAllTodos} />;
+        return <DisplayTask todos={data.populatedTodos} />;
     }
   };
 
@@ -322,9 +217,9 @@ const Home = () => {
             }}
             onClick={() => setActiveTab("alltask")}
           >
-            All Task ({task.totalTask})
+            All Task ({taskDetail.totalTask})
           </div>
-          <duv
+          <div
             type="button"
             style={{
               maxWidth: "180px",
@@ -339,8 +234,8 @@ const Home = () => {
             }}
             onClick={() => setActiveTab("pendingtask")}
           >
-            Pending Task ({task.pendingTask})
-          </duv>
+            Pending Task ({taskDetail.pendingTask})
+          </div>
           <div
             type="button"
             style={{
@@ -356,7 +251,7 @@ const Home = () => {
             }}
             onClick={() => setActiveTab("completedtask")}
           >
-            Completed Task ({task.completedTask})
+            Completed Task ({taskDetail.completedTask})
           </div>
         </div>
 

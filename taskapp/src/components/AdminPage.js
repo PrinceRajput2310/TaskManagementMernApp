@@ -1,23 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Table from "react-bootstrap/Table";
-import axios from "axios";
-import { API_URL } from "../utils/apiEndPoints";
+import { allUsersRequest } from "../redux/reduxSlice/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 const AdminPage = () => {
-  const [userListWithTask, setUserListWithtask] = useState([]);
+  const dispatch = useDispatch();
+  const allUsers = useSelector((state) => state.user);
 
-  const userListWithTaskCount = async () => {
-    const user = await axios.get(`${API_URL}/api/v1/allusers`, {
-      withCredentials: true,
-    });
-    const data = await user.data.users;
-    setUserListWithtask(data);
-  };
   useEffect(() => {
-    userListWithTaskCount();
-  }, []);
-
-  console.log("userListWithTask", userListWithTask);
+    dispatch(allUsersRequest());
+  }, [dispatch]);
 
   return (
     <>
@@ -41,17 +33,20 @@ const AdminPage = () => {
           </tr>
         </thead>
         <tbody>
-          {userListWithTask &&
-            userListWithTask.map(({ name, email, todoCount, _id }, index) => {
-              return (
-                <tr key={_id}>
-                  <td>{index + 1}</td>
-                  <td>{name}</td>
-                  <td>{email}</td>
-                  <td>{todoCount}</td>
-                </tr>
-              );
-            })}
+          {allUsers &&
+            allUsers.data &&
+            allUsers.data.users.map(
+              ({ name, email, todoCount, _id }, index) => {
+                return (
+                  <tr key={_id}>
+                    <td>{index + 1}</td>
+                    <td>{name}</td>
+                    <td>{email}</td>
+                    <td>{todoCount}</td>
+                  </tr>
+                );
+              }
+            )}
         </tbody>
       </Table>
     </>

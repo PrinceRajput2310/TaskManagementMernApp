@@ -1,40 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import cookie from "js-cookie";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { API_URL } from "../utils/apiEndPoints";
+import { useDispatch } from "react-redux";
+import { userSignupRequest } from "../redux/reduxSlice/userSlice";
 
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const registerUser = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(`${API_URL}/api/v1/signup`, {
-        name,
-        email,
-        password,
-      });
-      const user = await response.data;
-      const token = user.token;
-      if (!token) {
-        console.log("Error during Signup , please fill all fields");
-      } else {
-        localStorage.setItem("token", token);
-        cookie.set("token", token, { expires: 2, path: "/" });
-        cookie.set("userId", user._id, { expires: 2, path: "/" });
-        navigate("/home");
-        console.log("User Registerd Successfully", token);
-      }
-    } catch (error) {
-      console.log("Error calling api");
-    }
+    dispatch(userSignupRequest({ name, email, password }));
   };
 
   return (

@@ -1,16 +1,19 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { API_URL } from "../utils/apiEndPoints";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { Modal, Input, Select, Spin } from "antd";
+import {
+  updateTaskRequest,
+  deleteTaskRequest,
+} from "../redux/reduxSlice/taskSlice";
+import { useDispatch } from "react-redux";
 
 const { TextArea } = Input;
 
-const DisplayTask = ({ todos, getAllTodos }) => {
+const DisplayTask = ({ todos }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newTodo, setNewTodo] = useState("");
@@ -19,6 +22,7 @@ const DisplayTask = ({ todos, getAllTodos }) => {
   const [defaultPriority, setDefaultPriority] = useState("");
   const [newStaus, setNewStatus] = useState("");
   const [newPriority, setNewPriority] = useState("");
+  const dispatch = useDispatch();
 
   const showModal = (title, content, id, status, priority) => {
     setNewTitle(title);
@@ -28,54 +32,24 @@ const DisplayTask = ({ todos, getAllTodos }) => {
     setDefaultStatus(status);
     setIsModalOpen(true);
   };
-  const handleOk = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const updateTask = await axios.put(
-        `${API_URL}/api/v1/todo/update`,
-        {
-          id: editId,
-          title: newTitle,
-          content: newTodo,
-          status: newStaus,
-          priority: newPriority,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Todo updated successfully", updateTask.data);
-      getAllTodos();
-      setIsModalOpen(false);
-    } catch (error) {
-      console.log(`Error during updates ${error}`);
-    }
+  const handleOk = () => {
+    dispatch(
+      updateTaskRequest({
+        editId,
+        newTitle,
+        newTodo,
+        newStaus,
+        newPriority,
+      })
+    );
+    setIsModalOpen(false);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const handleDelete = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
-      console.log("token inside delete api", token);
-      const deletedTask = await axios.delete(`${API_URL}/api/v1/todo/delete`, {
-        data: { id },
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      getAllTodos();
-      console.log("todo deleted Successfully", deletedTask.data);
-    } catch (error) {
-      console.log("Error deleting todo", error);
-    }
+  const handleDelete = (id) => {
+    dispatch(deleteTaskRequest({ id }));
   };
 
   const onChange = (value) => {

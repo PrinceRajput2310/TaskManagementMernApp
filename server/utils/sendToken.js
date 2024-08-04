@@ -1,6 +1,6 @@
 export const sendToken = (user, statusCode, res) => {
   const token = user.getJWTToken();
-
+  user.password = undefined;
   res.status(statusCode).json({
     success: true,
     user,

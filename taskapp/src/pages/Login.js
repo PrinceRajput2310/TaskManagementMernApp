@@ -1,42 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import cookie from "js-cookie";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { API_URL } from "../utils/apiEndPoints";
+import { useDispatch } from "react-redux";
+import { userLoginRequest } from "../redux/reduxSlice/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
 
   const loginUser = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(`${API_URL}/api/v1/login`, {
-        email,
-        password,
-      });
-      const user = await response.data;
-      const token = user.token;
-      const userName = user.user.name;
-      console.log(" user token", userName);
-      if (token) {
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", userName);
-        cookie.set("token", token, { expires: 1, path: "/" });
-        cookie.set("user", userName, {
-          expires: 1,
-          path: "/",
-        });
-        navigate("/home");
-      } else {
-        console.log("Email and password is invalid");
-      }
-    } catch (error) {
-      console.log("Error during getting api call");
-    }
+    dispatch(userLoginRequest({ email, password }));
   };
   return (
     <div
