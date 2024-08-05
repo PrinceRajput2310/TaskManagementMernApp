@@ -4,6 +4,10 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { useNavigate } from "react-router-dom";
 import { GiNotebook } from "react-icons/gi";
 import { useDispatch } from "react-redux";
+import { RxDashboard } from "react-icons/rx";
+import { IoLogOutOutline } from "react-icons/io5";
+import { CgProfile } from "react-icons/cg";
+import { TbBrandGoogleAnalytics } from "react-icons/tb";
 import { logoutUserRequest } from "../redux/reduxSlice/userSlice";
 
 function Header() {
@@ -24,8 +28,13 @@ function Header() {
     <Navbar expand="lg" className="bg-body-tertiary" sticky="top">
       <Container>
         <Navbar.Brand
-          href="#"
-          style={{ fontFamily: "cursive", outline: "none", background: "none" }}
+          onClick={() => navigate("/home")}
+          style={{
+            fontFamily: "cursive",
+            outline: "none",
+            background: "none",
+            cursor: "pointer",
+          }}
         >
           <span>
             <GiNotebook />
@@ -42,9 +51,19 @@ function Header() {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item onClick={logoutUser}>Logout</Dropdown.Item>
+            <Dropdown.Item onClick={() => navigate("/profile")}>
+              <CgProfile size={20} /> Profile
+            </Dropdown.Item>
             <Dropdown.Item onClick={navigateToAdminPage}>
-              Admin Page
+              <RxDashboard /> Dashboard
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => navigate("/analytics")}>
+              <TbBrandGoogleAnalytics size={20} /> Analytics
+            </Dropdown.Item>
+            <Dropdown.Item onClick={logoutUser}>
+              {" "}
+              <IoLogOutOutline size={25} />
+              Logout
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

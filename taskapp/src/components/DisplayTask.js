@@ -5,6 +5,8 @@ import Row from "react-bootstrap/Row";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { Modal, Input, Select, Spin } from "antd";
+import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 import {
   updateTaskRequest,
   deleteTaskRequest,
@@ -114,10 +116,10 @@ const DisplayTask = ({ todos }) => {
                                 showModal(title, content, _id, status, priority)
                               }
                             >
-                              Edit
+                              <FaEdit size={20} /> Edit
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => handleDelete(_id)}>
-                              Delete
+                              <MdDelete size={20} /> Delete
                             </Dropdown.Item>
                           </DropdownButton>
                           <Card.Body>

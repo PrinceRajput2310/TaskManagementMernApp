@@ -4,6 +4,7 @@ import Header from "./Header";
 import { Input, Button } from "antd";
 import DisplayTask from "./DisplayTask";
 import { Select } from "antd";
+import { IoMdAdd } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchTaskRequest,
@@ -182,7 +183,7 @@ const Home = () => {
             color: "white",
           }}
         >
-          Add Task
+          <IoMdAdd size={20} /> Add Task
         </Button>
       </div>
       <div

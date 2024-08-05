@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import { allUsersRequest } from "../redux/reduxSlice/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import Header from "./Header";
 
 const AdminPage = () => {
   const dispatch = useDispatch();
@@ -12,15 +13,16 @@ const AdminPage = () => {
   }, [dispatch]);
 
   return (
-    <>
+    <div>
+      <Header />
       <h2
         style={{
           alignItems: "center",
           textAlign: "center",
-          marginTop: "5%",
+          marginTop: "2%",
         }}
       >
-        Total Registerd User Table:
+        User Dashboard
       </h2>
 
       <Table striped bordered hover style={{ marginTop: "20px" }}>
@@ -49,7 +51,7 @@ const AdminPage = () => {
             )}
         </tbody>
       </Table>
-    </>
+    </div>
   );
 };
 

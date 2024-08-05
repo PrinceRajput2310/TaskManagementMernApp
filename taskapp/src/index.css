@@ -11,3 +11,31 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* profile styles */
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300);
+
+.jumbotron-flat {
+  background-color: 'solid #4DB8FFF';
+  height: 100%;
+  border: 1px solid #4DB8FF;
+  background: white;
+  width: 100%;
+text-align: center;
+overflow: auto;
+  color: var(--dark-color);
+}
+
+.paymentAmt {
+  color: var(--dark-color);
+    font-size: 80px; 
+}
+
+.centered {
+    text-align: center;
+}
+
+.title {
+ padding-top: 15px;   
+  color: var(--dark-color);
+}
