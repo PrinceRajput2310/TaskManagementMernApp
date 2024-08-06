@@ -9,8 +9,6 @@ export const registerPerson = async (req, res) => {
   } else {
     try {
       const user = await User.create({ name, email, password });
-      // await newPerson.save();
-
       sendToken(user, 201, res);
     } catch (error) {
       console.error("error during register", error);
@@ -27,7 +25,6 @@ export const loginPerson = async (req, res) => {
     return res.status(201).json({ message: "Invalid Email and Password" });
   }
   const isPasswordMatch = await user.comparePassword(password);
-  // const token = user.getJWTToken();
   console.log("password match value", isPasswordMatch);
   if (!isPasswordMatch) {
     return res.send({ message: "Invalid Email and Password" });
@@ -39,46 +36,63 @@ export const loginPerson = async (req, res) => {
 //  endpoint to get all registered persons
 export const getAllPersons = async (req, res) => {
   try {
-    const usersWithTodos = await User.aggregate([
-      {
-        $lookup: {
-          from: "todos", // Make sure this matches the collection name for your TodoList model
-          localField: "_id",
-          foreignField: "user", // Assuming that `userId` in TodoList refers to the user
-          as: "todos",
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          email: 1,
-          todoCount: { $size: "$todos" },
-        },
-      },
-    ]);
+    if (req.body["user-analytics"]) {
+      const users = await User.find({});
+      const groupedUsers = users.reduce((acc, user) => {
+        const date = new Date(user.createdAt);
+        const formattedDate = `${String(date.getDate()).padStart(
+          2,
+          "0"
+        )}/${String(date.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}/${date.getFullYear()}`;
+        if (!acc[formattedDate]) {
+          acc[formattedDate] = [];
+        }
+        acc[formattedDate].push(user);
+        return acc;
+      }, {});
 
-    return res.status(200).json({
-      message: "All Users and their todo counts",
-      users: usersWithTodos,
-    });
+      // Prepare the result to display user count for each date
+      const result = [];
+      for (const [date, users] of Object.entries(groupedUsers)) {
+        result.push({
+          date,
+          count: users.length,
+        });
+      }
+      res.json({ success: true, result });
+    } else {
+      const usersWithTodos = await User.aggregate([
+        {
+          $lookup: {
+            from: "todos",
+            localField: "_id",
+            foreignField: "user",
+            as: "todos",
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            email: 1,
+            todoCount: { $size: "$todos" },
+          },
+        },
+      ]);
+
+      return res.status(200).json({
+        message: "All Users and their todo counts",
+        users: usersWithTodos,
+      });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).send("Error retrieving persons");
   }
 };
-// export const getAllPersons = async (req, res) => {
-//   try {
-//     const user = await User.find({});
-//     return res.status(200).json({
-//       message: "All Users",
-//       user,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).send("Error retrieving persons");
-//   }
-// };
 
 //get Single user Details
 

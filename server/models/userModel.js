@@ -18,6 +18,10 @@ const personSchema = new mongoose.Schema({
     type: String,
     required: [true, "Minimum password length should be 5 character"],
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 //hashed password using bcrypt
 personSchema.pre("save", async function (next) {
