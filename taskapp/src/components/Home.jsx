@@ -179,7 +179,7 @@ const Home = () => {
             background: "none",
             fontSize: "16px",
             padding: "15px",
-            backgroundColor: "blue",
+            backgroundColor: "lightseagreen",
             color: "white",
           }}
         >

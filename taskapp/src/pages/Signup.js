@@ -4,6 +4,8 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useDispatch } from "react-redux";
 import { userSignupRequest } from "../redux/reduxSlice/userSlice";
+import { FaArrowLeft } from "react-icons/fa";
+import logo from "../assets/notebook.svg";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -24,10 +26,20 @@ const Signup = () => {
         justifyContent: "center",
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: "10%",
+        marginTop: "8%",
+        boxShadow:
+          "0px 20px 20px 0px rgba(0, 0, 0, .08), 0px 0px 2px 0px rgba(0, 0, 0, .12)",
+        padding: "40px",
+        maxWidth: "500px",
       }}
     >
       <Form>
+        <div style={{ textAlign: "center" }}>
+          <img src={logo} alt="logo" height={60} width={60} />{" "}
+          <span style={{ fontFamily: "cursive", fontSize: "x-large" }}>
+            Task Management
+          </span>
+        </div>
         <h2 style={{ textAlign: "center", alignItems: "center" }}>Signup</h2>
         <Form.Group className="mb-3" controlId="formBasicName">
           <Form.Label>Enter Name</Form.Label>
@@ -57,13 +69,24 @@ const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Button variant="primary" type="submit" onClick={registerUser}>
-          Signup
+        <Button
+          variant="info"
+          type="submit"
+          onClick={registerUser}
+          style={{ width: "100%", color: "white" }}
+        >
+          Create account
         </Button>
-        <div>
+        <div style={{ marginTop: "10px" }}>
           Already have an account?{" "}
-          <Button type="button" onClick={() => navigate("/login")}>
-            Login
+          <Button
+            type="button"
+            variant="success"
+            color=""
+            onClick={() => navigate("/login")}
+            style={{ backgroundColor: "rgb(66, 153, 225);" }}
+          >
+            <FaArrowLeft size={15} /> Back to login
           </Button>
         </div>
       </Form>

@@ -36,7 +36,7 @@ export default function Profile() {
 
             <form className="form-horizontal">
               <div className="form-group">
-                <label className="col-md-3 control-label">Username:</label>
+                <label className="col-md-3 control-label">User Name:</label>
                 <div className="col-md-8">
                   <input className="form-control" type="text" />
                 </div>
@@ -49,17 +49,21 @@ export default function Profile() {
               </div>
 
               <div className="form-group">
-                <label className="col-md-3 control-label">Password:</label>
+                <label className="col-md-3 control-label">Phone Number:</label>
                 <div className="col-md-8">
                   <input className="form-control" type="password" />
                 </div>
               </div>
               <div className="form-group">
-                <label className="col-md-3 control-label">
-                  Confirm password:
-                </label>
+                <label className="col-md-3 control-label">Date of Birth:</label>
                 <div className="col-md-8">
                   <input className="form-control" type="password" />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="col-md-3 control-label">Place:</label>
+                <div className="col-md-8">
+                  <input className="form-control" type="text" />
                 </div>
               </div>
               <div className="form-group">

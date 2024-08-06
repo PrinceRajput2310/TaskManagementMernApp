@@ -4,6 +4,8 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useDispatch } from "react-redux";
 import { userLoginRequest } from "../redux/reduxSlice/userSlice";
+import logo from "../assets/notebook.svg";
+import { IoAddCircleOutline } from "react-icons/io5";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -22,10 +24,20 @@ const Login = () => {
         justifyContent: "center",
         marginLeft: "auto",
         marginRight: "auto",
-        marginTop: "10%",
+        marginTop: "8%",
+        boxShadow:
+          "0px 20px 20px 0px rgba(0, 0, 0, .08), 0px 0px 2px 0px rgba(0, 0, 0, .12)",
+        padding: "40px",
+        maxWidth: "500px",
       }}
     >
       <Form>
+        <div style={{ textAlign: "center" }}>
+          <img src={logo} alt="logo" height={60} width={60} />{" "}
+          <span style={{ fontFamily: "cursive", fontSize: "x-large" }}>
+            Task Management
+          </span>
+        </div>
         <h2
           style={{
             textAlign: "center",
@@ -53,13 +65,20 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Button variant="primary" type="submit" onClick={loginUser}>
+
+        <Button
+          variant="info"
+          type="submit"
+          onClick={loginUser}
+          style={{ width: "100%", color: "white" }}
+        >
           Login
         </Button>
-        <div>
+
+        <div style={{ marginTop: "10px" }}>
           if you don't have account?{" "}
-          <Button type="button" onClick={() => navigate("/")}>
-            Signup
+          <Button type="button" onClick={() => navigate("/")} variant="success">
+            <IoAddCircleOutline size={20} /> Create account
           </Button>
         </div>
       </Form>
