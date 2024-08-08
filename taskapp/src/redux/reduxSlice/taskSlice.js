@@ -8,6 +8,7 @@ const TaskSlice = createSlice({
     completed: [],
     searchTask: [],
     allTask: [],
+    taskAnalytics: [],
     lodaing: false,
     error: null,
   },
@@ -108,6 +109,18 @@ const TaskSlice = createSlice({
       state.lodaing = false;
       state.error = action.payload;
     },
+    // get Task analytics reducer
+    taskAnalyticsRequest(state) {
+      state.lodaing = true;
+    },
+    taskAnalyticsSuccess(state, action) {
+      state.lodaing = false;
+      state.taskAnalytics = action.payload;
+    },
+    taskAnalyticsFailure(state, action) {
+      state.lodaing = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -136,6 +149,9 @@ export const {
   allTaskFailure,
   allTaskRequest,
   allTaskSuccess,
+  taskAnalyticsFailure,
+  taskAnalyticsRequest,
+  taskAnalyticsSuccess,
 } = TaskSlice.actions;
 
 export default TaskSlice.reducer;

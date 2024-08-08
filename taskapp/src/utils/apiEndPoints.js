@@ -24,6 +24,8 @@ const API_ENDPOINT = {
   completedTask: `${apiSever}/api/v1/todo/category?category=Completed`,
   taskDetail: `${apiSever}/api/v1/todo/taskdetail`,
   allUsers: `${apiSever}/api/v1/allusers`,
+  userAnalytics: `${apiSever}/api/v1/user/analytics`,
+  taskAnalytics: `${apiSever}/api/v1/todo/taskanalytics`,
 };
 
 export default API_ENDPOINT;

@@ -1,17 +1,51 @@
 import React, { useEffect } from "react";
-import Table from "react-bootstrap/Table";
 import { allUsersRequest } from "../redux/reduxSlice/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { Table } from "antd";
 import Header from "./Header";
+
+const columns = [
+  {
+    title: "Sr No",
+    dataIndex: "index",
+    render: (text, record, index) => index + 1,
+  },
+  {
+    title: "User name",
+    dataIndex: "name",
+    sorter: {
+      compare: (a, b) => a.name - b.name,
+      multiple: 3,
+    },
+  },
+  {
+    title: "Email",
+    dataIndex: "email",
+    sorter: {
+      compare: (a, b) => a.email - b.email,
+      multiple: 2,
+    },
+  },
+  {
+    title: "Total task created",
+    dataIndex: "todoCount",
+    sorter: {
+      compare: (a, b) => a.todoCount - b.todoCount,
+      multiple: 1,
+    },
+  },
+];
 
 const AdminPage = () => {
   const dispatch = useDispatch();
   const allUsers = useSelector((state) => state.user);
-
   useEffect(() => {
     dispatch(allUsersRequest());
   }, [dispatch]);
 
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log("params", pagination, filters, sorter, extra);
+  };
   return (
     <div>
       <Header />
@@ -19,38 +53,21 @@ const AdminPage = () => {
         style={{
           alignItems: "center",
           textAlign: "center",
-          marginTop: "2%",
+          marginTop: "1%",
         }}
       >
         User Dashboard
       </h2>
-
-      <Table striped bordered hover style={{ marginTop: "20px" }}>
-        <thead>
-          <tr>
-            <th>Sr.No</th>
-            <th>User Name</th>
-            <th>Email</th>
-            <th>Total Task Created</th>
-          </tr>
-        </thead>
-        <tbody>
-          {allUsers &&
-            allUsers.data &&
-            allUsers.data.users.map(
-              ({ name, email, todoCount, _id }, index) => {
-                return (
-                  <tr key={_id}>
-                    <td>{index + 1}</td>
-                    <td>{name}</td>
-                    <td>{email}</td>
-                    <td>{todoCount}</td>
-                  </tr>
-                );
-              }
-            )}
-        </tbody>
-      </Table>
+      <div
+        className="dashboard-table-container"
+        style={{ margin: "0px 50px 0px 50px" }}
+      >
+        <Table
+          columns={columns}
+          dataSource={allUsers && allUsers.data && allUsers.data.users}
+          onChange={onChange}
+        />
+      </div>
     </div>
   );
 };

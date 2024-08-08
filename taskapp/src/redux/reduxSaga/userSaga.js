@@ -7,6 +7,9 @@ import {
   logoutUserFailure,
   logoutUserRequest,
   logoutUserSuccess,
+  userAnalyticsFailure,
+  userAnalyticsRequest,
+  userAnalyticsSuccess,
   userLoginFailure,
   userLoginRequest,
   userLoginSuccess,
@@ -107,9 +110,30 @@ function* logoutUserSaga() {
   }
 }
 
+//  user Analytics Saga
+
+function* userAnalyticsSaga() {
+  try {
+    const response = yield call(
+      axios.get,
+      `${API_ENDPOINT.userAnalytics}?userAnalytics=bargraph`,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    yield put(userAnalyticsSuccess(response.data));
+  } catch (error) {
+    yield put(userAnalyticsFailure(error.message));
+  }
+}
+
 export default function* userSaga() {
   yield takeEvery(userLoginRequest.type, login);
   yield takeEvery(userSignupRequest.type, signup);
   yield takeEvery(allUsersRequest.type, allUsersSaga);
   yield takeEvery(logoutUserRequest.type, logoutUserSaga);
+  yield takeEvery(userAnalyticsRequest.type, userAnalyticsSaga);
 }

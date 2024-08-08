@@ -87,7 +87,6 @@ export const searchTodo = async (req, res) => {
 export const updateTodo = async (req, res) => {
   try {
     const { id, title, content, status, priority } = req.body;
-    console.log("----backend", title, content, status, priority);
     const todo = await TodoList.findOneAndUpdate(
       { _id: id },
       {
@@ -163,6 +162,49 @@ export const getTotalTask = async (req, res) => {
     return res.status(201).json({
       success: false,
       message: "Error getting Total Task",
+    });
+  }
+};
+
+// task analytics
+
+export const taskAnalytics = async (req, res) => {
+  try {
+    const task = await TodoList.find({});
+
+    // Initialize counters for pending and completed tasks
+    let pendingTaskCount = 0;
+    let completedTaskCount = 0;
+
+    // Iterate through tasks and count pending and completed ones
+    task.forEach((task) => {
+      if (task.status === "Pending") {
+        pendingTaskCount++;
+      } else if (task.status === "Completed") {
+        completedTaskCount++;
+      }
+    });
+
+    const pendingTaskPercentage = Math.floor(
+      (pendingTaskCount / task.length) * 100
+    );
+
+    const completedTaskPercentage = Math.floor(
+      (completedTaskCount / task.length) * 100
+    );
+
+    return res.status(200).json({
+      success: true,
+      totalTaskCount: task.length,
+      pendingTaskCount,
+      completedTaskCount,
+      pendingTaskPercentage,
+      completedTaskPercentage,
+    });
+  } catch (error) {
+    return res.status(201).json({
+      success: false,
+      message: "Error during task analytics data",
     });
   }
 };

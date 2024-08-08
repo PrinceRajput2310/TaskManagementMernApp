@@ -25,6 +25,9 @@ import {
   allTaskSuccess,
   allTaskFailure,
   allTaskRequest,
+  taskAnalyticsSuccess,
+  taskAnalyticsFailure,
+  taskAnalyticsRequest,
 } from "../reduxSlice/taskSlice";
 import API_ENDPOINT from "../../utils/apiEndPoints";
 
@@ -226,6 +229,30 @@ function* detailTaskSaga() {
     yield put(allTaskFailure(error.message));
   }
 }
+
+// task detail
+
+function* taskAnalyticsSaga() {
+  try {
+    const token = localStorage.getItem("token");
+    const response = yield call(
+      axios.get,
+      `${API_ENDPOINT.taskAnalytics}`,
+
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    yield put(taskAnalyticsSuccess(response.data));
+  } catch (error) {
+    yield put(taskAnalyticsFailure(error.message));
+  }
+}
+
 export default function* taskSaga() {
   yield takeEvery(fetchTaskRequest.type, fetchTaskDetailSaga);
   yield takeEvery(newTaskRequest.type, newTaskSaga);
@@ -235,4 +262,5 @@ export default function* taskSaga() {
   yield takeEvery(pendingTaskRequest.type, pendingTaskSaga);
   yield takeEvery(completedTaskRequest.type, completedTaskSaga);
   yield takeEvery(allTaskRequest.type, detailTaskSaga);
+  yield takeEvery(taskAnalyticsRequest.type, taskAnalyticsSaga);
 }

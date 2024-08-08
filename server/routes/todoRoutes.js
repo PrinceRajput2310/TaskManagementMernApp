@@ -8,6 +8,7 @@ import {
   updateTodo,
   getTaskByCategory,
   getTotalTask,
+  taskAnalytics,
 } from "../controllers/todoControllers.js";
 import { sendEmail } from "../controllers/SendEmail.js";
 import { isAuthenticatedUser } from "../middleware/userAuth.js";
@@ -20,6 +21,7 @@ router.route("/todo/taskdetail").get(isAuthenticatedUser, getTotalTask);
 router.delete("/todo/delete", isAuthenticatedUser, deleteTodo);
 router.post("/todo/search", isAuthenticatedUser, searchTodo);
 router.route("/todo/update").put(isAuthenticatedUser, updateTodo);
+router.route("/todo/taskanalytics").get(taskAnalytics);
 router.route("/sendemail").post(sendEmail);
 
 export default router;

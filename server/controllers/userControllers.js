@@ -25,7 +25,6 @@ export const loginPerson = async (req, res) => {
     return res.status(201).json({ message: "Invalid Email and Password" });
   }
   const isPasswordMatch = await user.comparePassword(password);
-  console.log("password match value", isPasswordMatch);
   if (!isPasswordMatch) {
     return res.send({ message: "Invalid Email and Password" });
   } else {
@@ -36,58 +35,29 @@ export const loginPerson = async (req, res) => {
 //  endpoint to get all registered persons
 export const getAllPersons = async (req, res) => {
   try {
-    if (req.body["user-analytics"]) {
-      const users = await User.find({});
-      const groupedUsers = users.reduce((acc, user) => {
-        const date = new Date(user.createdAt);
-        const formattedDate = `${String(date.getDate()).padStart(
-          2,
-          "0"
-        )}/${String(date.getMonth() + 1).padStart(
-          2,
-          "0"
-        )}/${date.getFullYear()}`;
-        if (!acc[formattedDate]) {
-          acc[formattedDate] = [];
-        }
-        acc[formattedDate].push(user);
-        return acc;
-      }, {});
-
-      // Prepare the result to display user count for each date
-      const result = [];
-      for (const [date, users] of Object.entries(groupedUsers)) {
-        result.push({
-          date,
-          count: users.length,
-        });
-      }
-      res.json({ success: true, result });
-    } else {
-      const usersWithTodos = await User.aggregate([
-        {
-          $lookup: {
-            from: "todos",
-            localField: "_id",
-            foreignField: "user",
-            as: "todos",
-          },
+    const usersWithTodos = await User.aggregate([
+      {
+        $lookup: {
+          from: "todos",
+          localField: "_id",
+          foreignField: "user",
+          as: "todos",
         },
-        {
-          $project: {
-            _id: 1,
-            name: 1,
-            email: 1,
-            todoCount: { $size: "$todos" },
-          },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          email: 1,
+          todoCount: { $size: "$todos" },
         },
-      ]);
+      },
+    ]);
 
-      return res.status(200).json({
-        message: "All Users and their todo counts",
-        users: usersWithTodos,
-      });
-    }
+    return res.status(200).json({
+      message: "All Users and their todo counts",
+      users: usersWithTodos,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).send("Error retrieving persons");
@@ -125,4 +95,50 @@ export const logoutUser = async (req, res, next) => {
     success: true,
     message: "Logged Out",
   });
+};
+
+// user Analytics
+
+export const userAnalytics = async (req, res) => {
+  try {
+    const analytics = req.query.userAnalytics;
+    if (analytics === "bargraph") {
+      const users = await User.find({});
+      const groupedUsers = users.reduce((acc, user) => {
+        const date = new Date(user.createdAt);
+        const formattedDate = `${String(date.getDate()).padStart(
+          2,
+          "0"
+        )}/${String(date.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}/${date.getFullYear()}`;
+        if (!acc[formattedDate]) {
+          acc[formattedDate] = [];
+        }
+        acc[formattedDate].push(user);
+        return acc;
+      }, {});
+
+      // Prepare the result to display user count for each date
+      const result = [];
+      for (const [date, users] of Object.entries(groupedUsers)) {
+        result.push({
+          date,
+          user: users.length,
+        });
+      }
+      res.json({ success: true, result });
+    } else {
+      return res.status(201).json({
+        success: false,
+        message: "Query String is missing",
+      });
+    }
+  } catch (error) {
+    return res.status(201).json({
+      success: false,
+      message: "Error during fetch user Analytics",
+    });
+  }
 };
