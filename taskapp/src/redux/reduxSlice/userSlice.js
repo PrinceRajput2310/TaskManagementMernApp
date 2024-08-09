@@ -56,6 +56,18 @@ const UserSlice = createSlice({
       state.lodaing = false;
       state.error = action.payload;
     },
+    // user Analytics reducer
+    userAnalyticsRequest(state) {
+      state.lodaing = true;
+    },
+    userAnalyticsSuccess(state, action) {
+      state.lodaing = false;
+      state.data = action.payload;
+    },
+    userAnalyticsFailure(state, action) {
+      state.lodaing = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -72,6 +84,9 @@ export const {
   logoutUserFailure,
   logoutUserRequest,
   logoutUserSuccess,
+  userAnalyticsFailure,
+  userAnalyticsRequest,
+  userAnalyticsSuccess,
 } = UserSlice.actions;
 
 export default UserSlice.reducer;

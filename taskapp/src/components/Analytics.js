@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./Header";
 import {
   BarChart,
@@ -12,61 +12,13 @@ import {
   PieChart,
   Pie,
   Cell,
+  ResponsiveContainer,
 } from "recharts";
+import { userAnalyticsRequest } from "../redux/reduxSlice/userSlice";
+import { taskAnalyticsRequest } from "../redux/reduxSlice/taskSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-const data = [
-  {
-    name: "Page A",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: "Page B",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
-
-const data1 = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-];
-
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#00C49F", "#FFBB28"];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -96,8 +48,127 @@ const renderCustomizedLabel = ({
 };
 
 export default function Analytics() {
+  const dispatch = useDispatch();
+  const graphData = useSelector((state) => state.user);
+  const taskAnalytics = useSelector((state) => state.task);
+  const userAnalytics = graphData && graphData.data && graphData.data.result;
+  const totalUsers =
+    userAnalytics &&
+    userAnalytics.reduce((total, current) => {
+      return total + current.user;
+    }, 0);
+
+  useEffect(() => {
+    dispatch(userAnalyticsRequest());
+    dispatch(taskAnalyticsRequest());
+  }, [dispatch]);
+
+  const taskAnalyticsData = [
+    {
+      name: "Pending Tasks",
+      value: taskAnalytics && taskAnalytics.taskAnalytics.pendingTaskPercentage,
+      task: taskAnalytics && taskAnalytics.taskAnalytics.pendingTaskCount,
+    },
+    {
+      name: "Completed Tasks",
+      value:
+        taskAnalytics && taskAnalytics.taskAnalytics.completedTaskPercentage,
+      task: taskAnalytics && taskAnalytics.taskAnalytics.completedTaskCount,
+    },
+  ];
+
+  const CustomLegend = ({ totalUsers }) => {
+    return (
+      <div
+        style={{
+          marginTop: "20px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "12px",
+        }}
+      >
+        <div>
+          <span style={{ color: "#A9BA00", marginRight: "8px" }}>●</span>
+          <span>{`Total Users: ${totalUsers}`}</span>
+        </div>
+      </div>
+    );
+  };
+
+  // Customize the legend to show task counts
+  const customLegend = [
+    {
+      name: `Total Tasks: ${
+        taskAnalytics && taskAnalytics.taskAnalytics.totalTaskCount
+      }`,
+      value: "",
+      color: "tomato",
+    },
+    {
+      name: `Pending Tasks: ${
+        taskAnalytics && taskAnalytics.taskAnalytics.pendingTaskCount
+      }`,
+      value: "",
+      color: "#00C49F",
+    },
+    {
+      name: `Completed Tasks: ${
+        taskAnalytics && taskAnalytics.taskAnalytics.completedTaskCount
+      }`,
+      value: "",
+      color: "#FFBB28",
+    },
+  ];
+
+  const renderCustomLegend = () => {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", gap: "12px" }}>
+        {customLegend.map((entry, index) => (
+          <div key={`item-${index}`} style={{ margin: "5px 0" }}>
+            <span
+              style={{
+                display: "inline-block",
+                width: "12px",
+                height: "12px",
+                backgroundColor: entry.color,
+                marginRight: "8px",
+                // borderRadius: "50%",
+              }}
+            />
+            <span>{entry.name}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // Custom Tooltip
+  const renderCustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          className="custom-tooltip"
+          style={{
+            backgroundColor: "#fff",
+            border: "1px solid #ccc",
+            padding: "10px",
+            borderRadius: "4px",
+          }}
+        >
+          <p style={{ margin: 0 }}>
+            <strong>
+              {payload[0].name}: {payload[0].value}
+            </strong>
+          </p>
+        </div>
+      );
+    }
+
+    return null;
+  };
   return (
-    <div>
+    <div style={{ marginBottom: "100px" }}>
       <Header />
       <h1 style={{ textAlign: "center", display: "block", marginTop: "2rem" }}>
         User analytics
@@ -108,35 +179,34 @@ export default function Analytics() {
           //   backgroundColor: "tomato",
           display: "flex",
           justifyContent: "center",
+          width: "100%",
+          height: "400px",
         }}
       >
-        <BarChart
-          width={500}
-          height={300}
-          data={data}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar
-            dataKey="pv"
-            fill="#8884d8"
-            activeBar={<Rectangle fill="pink" stroke="blue" />}
-          />
-          <Bar
-            dataKey="uv"
-            fill="#82ca9d"
-            activeBar={<Rectangle fill="gold" stroke="purple" />}
-          />
-        </BarChart>
+        <ResponsiveContainer style={{ width: "100%", height: "100%" }}>
+          <BarChart
+            data={userAnalytics}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend content={<CustomLegend totalUsers={totalUsers} />} />
+            <Bar
+              dataKey="user"
+              fill="#A9BA00 "
+              maxBarSize={30}
+              baGap={10}
+              activeBar={<Rectangle stroke="#A9BA00" />}
+            />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
       <h1 style={{ textAlign: "center", display: "block", marginTop: "2rem" }}>
         Task analytics
@@ -147,28 +217,35 @@ export default function Analytics() {
           //   backgroundColor: "tomato",
           display: "flex",
           justifyContent: "center",
-          marginTop: "2rem",
+          width: "100%",
+          height: "400px",
         }}
       >
-        <PieChart width={400} height={400}>
-          <Pie
-            data={data1}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={renderCustomizedLabel}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
-          >
-            {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
-        </PieChart>
+        <ResponsiveContainer style={{ width: "100%", height: "100%" }}>
+          <PieChart>
+            <Legend content={renderCustomLegend} />
+
+            <Tooltip content={renderCustomTooltip} />
+
+            <Pie
+              data={taskAnalyticsData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={renderCustomizedLabel}
+              outerRadius={150}
+              fill="#8884d8"
+              dataKey="task"
+            >
+              {taskAnalyticsData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
