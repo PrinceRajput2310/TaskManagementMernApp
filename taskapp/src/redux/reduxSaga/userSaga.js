@@ -7,6 +7,9 @@ import {
   logoutUserFailure,
   logoutUserRequest,
   logoutUserSuccess,
+  myScoreRankFailure,
+  myScoreRankRequest,
+  myScoreRankSuccess,
   userAnalyticsFailure,
   userAnalyticsRequest,
   userAnalyticsSuccess,
@@ -130,10 +133,33 @@ function* userAnalyticsSaga() {
   }
 }
 
+//  my completed task Rank Saga
+
+function* myCompletedTaskRankSaga() {
+  try {
+    const token = localStorage.getItem("token");
+    const response = yield call(
+      axios.get,
+      `${API_ENDPOINT.myCompletedTaskRank}`,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    yield put(myScoreRankSuccess(response.data));
+  } catch (error) {
+    yield put(myScoreRankFailure(error.message));
+  }
+}
+
 export default function* userSaga() {
   yield takeEvery(userLoginRequest.type, login);
   yield takeEvery(userSignupRequest.type, signup);
   yield takeEvery(allUsersRequest.type, allUsersSaga);
   yield takeEvery(logoutUserRequest.type, logoutUserSaga);
   yield takeEvery(userAnalyticsRequest.type, userAnalyticsSaga);
+  yield takeEvery(myScoreRankRequest.type, myCompletedTaskRankSaga);
 }

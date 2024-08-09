@@ -17,6 +17,7 @@ import {
 import { userAnalyticsRequest } from "../redux/reduxSlice/userSlice";
 import { taskAnalyticsRequest } from "../redux/reduxSlice/taskSlice";
 import { useDispatch, useSelector } from "react-redux";
+import YourScoreBarGraph from "./UserScore";
 
 const COLORS = ["#00C49F", "#FFBB28"];
 
@@ -208,44 +209,105 @@ export default function Analytics() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <h1 style={{ textAlign: "center", display: "block", marginTop: "2rem" }}>
-        Task analytics
-      </h1>
+
       <div
         className="analytics-chart-container"
         style={{
-          //   backgroundColor: "tomato",
+          // backgroundColor: "tomato",
           display: "flex",
           justifyContent: "center",
+          gap: "20px",
           width: "100%",
           height: "400px",
         }}
       >
-        <ResponsiveContainer style={{ width: "100%", height: "100%" }}>
-          <PieChart>
-            <Legend content={renderCustomLegend} />
+        <div
+          className="total-task-analytics-container"
+          style={{
+            // backgroundColor: "yellow",
 
-            <Tooltip content={renderCustomTooltip} />
+            width: "100%",
+            height: "400px",
+          }}
+        >
+          <h1
+            style={{ textAlign: "center", display: "block", marginTop: "2rem" }}
+          >
+            Task analytics
+          </h1>
+          <ResponsiveContainer style={{ width: "100%", height: "100%" }}>
+            <PieChart>
+              <Legend content={renderCustomLegend} />
 
-            <Pie
-              data={taskAnalyticsData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={renderCustomizedLabel}
-              outerRadius={150}
-              fill="#8884d8"
-              dataKey="task"
-            >
-              {taskAnalyticsData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
+              <Tooltip content={renderCustomTooltip} />
+
+              <Pie
+                data={taskAnalyticsData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={renderCustomizedLabel}
+                outerRadius={150}
+                fill="#8884d8"
+                dataKey="task"
+              >
+                {taskAnalyticsData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <div
+          className="my-task-analytics"
+          style={{
+            //  backgroundColor: "green",
+            width: "100%",
+            height: "400px",
+          }}
+        >
+          <h1
+            style={{ textAlign: "center", display: "block", marginTop: "2rem" }}
+          >
+            My Task analytics
+          </h1>
+          <ResponsiveContainer style={{ width: "100%", height: "100%" }}>
+            <PieChart>
+              <Legend content={renderCustomLegend} />
+
+              <Tooltip content={renderCustomTooltip} />
+
+              <Pie
+                data={taskAnalyticsData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={renderCustomizedLabel}
+                outerRadius={150}
+                fill="#8884d8"
+                dataKey="task"
+              >
+                {taskAnalyticsData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      <div
+        style={{
+          marginTop: "120px",
+        }}
+      >
+        {" "}
+        <YourScoreBarGraph />
       </div>
     </div>
   );

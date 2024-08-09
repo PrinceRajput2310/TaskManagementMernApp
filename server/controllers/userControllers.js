@@ -142,3 +142,62 @@ export const userAnalytics = async (req, res) => {
     });
   }
 };
+
+export const getYourScoreData = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const allUsers = await User.find({});
+
+    let userRanges = {
+      "0-20%": 0,
+      "20-40%": 0,
+      "40-60%": 0,
+      "60-80%": 0,
+      "80-100%": 0,
+    };
+
+    let currentUserCompletionPercentage = 0;
+
+    for (let user of allUsers) {
+      const userTasks = await TodoList.find({ user: user._id });
+
+      const totalTasks = userTasks.length;
+      const completedTasks = userTasks.filter(
+        (task) => task.status === "Completed"
+      ).length;
+
+      const completionPercentage =
+        totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
+
+      if (user._id.toString() === userId) {
+        currentUserCompletionPercentage = Math.floor(completionPercentage);
+      }
+
+      // Categorize the user into the correct range
+      if (completionPercentage <= 20) userRanges["0-20%"]++;
+      else if (completionPercentage <= 40) userRanges["20-40%"]++;
+      else if (completionPercentage <= 60) userRanges["40-60%"]++;
+      else if (completionPercentage <= 80) userRanges["60-80%"]++;
+      else userRanges["80-100%"]++;
+    }
+
+    // Prepare the response data
+    const result = [
+      { range: "0-20%", user: userRanges["0-20%"] },
+      { range: "20-40%", user: userRanges["20-40%"] },
+      { range: "40-60%", user: userRanges["40-60%"] },
+      { range: "60-80%", user: userRanges["60-80%"] },
+      { range: "80-100%", user: userRanges["80-100%"] },
+    ];
+
+    // Send response
+    res.status(200).json({
+      success: true,
+      result,
+      currentUserCompletionPercentage,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error retrieving user score data" });
+  }
+};

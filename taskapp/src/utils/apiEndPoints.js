@@ -26,6 +26,7 @@ const API_ENDPOINT = {
   allUsers: `${apiSever}/api/v1/allusers`,
   userAnalytics: `${apiSever}/api/v1/user/analytics`,
   taskAnalytics: `${apiSever}/api/v1/todo/taskanalytics`,
+  myCompletedTaskRank: `${apiSever}/api/v1/user/myscore`,
 };
 
 export default API_ENDPOINT;

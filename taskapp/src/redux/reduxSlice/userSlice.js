@@ -4,6 +4,7 @@ const UserSlice = createSlice({
   name: "User",
   initialState: {
     user: [],
+    myScore:[],
     lodaing: false,
     error: null,
   },
@@ -68,6 +69,18 @@ const UserSlice = createSlice({
       state.lodaing = false;
       state.error = action.payload;
     },
+      // user completed Task Score reducer
+      myScoreRankRequest(state) {
+        state.lodaing = true;
+      },
+      myScoreRankSuccess(state, action) {
+        state.lodaing = false;
+        state.myScore = action.payload;
+      },
+      myScoreRankFailure(state, action) {
+        state.lodaing = false;
+        state.error = action.payload;
+      },
   },
 });
 
@@ -87,6 +100,9 @@ export const {
   userAnalyticsFailure,
   userAnalyticsRequest,
   userAnalyticsSuccess,
+  myScoreRankFailure,
+  myScoreRankRequest,
+  myScoreRankSuccess
 } = UserSlice.actions;
 
 export default UserSlice.reducer;
