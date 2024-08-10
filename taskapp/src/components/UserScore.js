@@ -72,9 +72,12 @@ const YourScoreBarGraph = () => {
   };
 
   return (
-    <div style={{ width: "100%", height: 400 }}>
+    <div
+      style={{ width: "100%", height: "400px" }}
+      className="user-taskCompletion-section"
+    >
       <h2 style={{ textAlign: "center", marginTop: "20px" }}>
-        My Task Completion Ranking
+        My Task Completion Category
       </h2>
       <ResponsiveContainer>
         <BarChart
@@ -86,7 +89,8 @@ const YourScoreBarGraph = () => {
           <YAxis />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          <Bar dataKey="user">
+
+          <Bar dataKey="user" maxBarSize={50}>
             {myScore &&
               myScore.result &&
               myScore.result.map((entry, index) => (

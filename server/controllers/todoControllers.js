@@ -141,22 +141,27 @@ export const getTaskByCategory = async (req, res) => {
 // get Total Task like, total task, pendingTask and Completed Task
 export const getTotalTask = async (req, res) => {
   try {
-    const totalTask = await TodoList.find({
-      user: req.user.id,
-    });
-    const pendingTask = await TodoList.find({
-      status: "Pending",
-      user: req.user.id,
-    });
-    const completedTask = await TodoList.find({
-      status: "Completed",
-      user: req.user.id,
-    });
+    const userTasks = await TodoList.find({ user: req.user.id });
+    const totalTask = userTasks.length;
+
+    const completedTask = userTasks.filter(
+      (task) => task.status === "Completed"
+    ).length;
+    const pendingTask = userTasks.filter(
+      (task) => task.status === "Pending"
+    ).length;
+
+    const completedTaskPercentage =
+      totalTask === 0 ? 0 : Math.floor((completedTask / totalTask) * 100);
+    const pendingTaskPercentage =
+      totalTask === 0 ? 0 : Math.floor((pendingTask / totalTask) * 100);
     return res.status(200).json({
       success: true,
-      totalTask: totalTask.length,
-      pendingTask: pendingTask.length,
-      completedTask: completedTask.length,
+      totalTask,
+      pendingTask,
+      completedTask,
+      completedTaskPercentage,
+      pendingTaskPercentage,
     });
   } catch (error) {
     return res.status(201).json({

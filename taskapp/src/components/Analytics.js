@@ -18,6 +18,8 @@ import { userAnalyticsRequest } from "../redux/reduxSlice/userSlice";
 import { taskAnalyticsRequest } from "../redux/reduxSlice/taskSlice";
 import { useDispatch, useSelector } from "react-redux";
 import YourScoreBarGraph from "./UserScore";
+import MyTaskAnalytics from "../commonComponents/MyTaskAnalytics";
+import "../index.css";
 
 const COLORS = ["#00C49F", "#FFBB28"];
 
@@ -211,7 +213,7 @@ export default function Analytics() {
       </div>
 
       <div
-        className="analytics-chart-container"
+        className="task-analytics-container"
         style={{
           // backgroundColor: "tomato",
           display: "flex",
@@ -225,7 +227,6 @@ export default function Analytics() {
           className="total-task-analytics-container"
           style={{
             // backgroundColor: "yellow",
-
             width: "100%",
             height: "400px",
           }}
@@ -264,7 +265,7 @@ export default function Analytics() {
         <div
           className="my-task-analytics"
           style={{
-            //  backgroundColor: "green",
+            // backgroundColor: "green",
             width: "100%",
             height: "400px",
           }}
@@ -274,37 +275,14 @@ export default function Analytics() {
           >
             My Task analytics
           </h1>
-          <ResponsiveContainer style={{ width: "100%", height: "100%" }}>
-            <PieChart>
-              <Legend content={renderCustomLegend} />
-
-              <Tooltip content={renderCustomTooltip} />
-
-              <Pie
-                data={taskAnalyticsData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={renderCustomizedLabel}
-                outerRadius={150}
-                fill="#8884d8"
-                dataKey="task"
-              >
-                {taskAnalyticsData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+          <MyTaskAnalytics />
         </div>
       </div>
       <div
         style={{
           marginTop: "120px",
         }}
+        className="myScore-category-graph-container"
       >
         {" "}
         <YourScoreBarGraph />
