@@ -8,6 +8,7 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { TbBrandGoogleAnalytics } from "react-icons/tb";
 import { logoutUserRequest } from "../redux/reduxSlice/userSlice";
+import { CgFeed } from "react-icons/cg";
 import logo from "../assets/notebook.svg";
 
 function Header() {
@@ -56,6 +57,9 @@ function Header() {
             </Dropdown.Item>
             <Dropdown.Item onClick={navigateToAdminPage}>
               <RxDashboard /> Dashboard
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => navigate("/feed")}>
+              <CgFeed /> Feed Section
             </Dropdown.Item>
             <Dropdown.Item onClick={() => navigate("/analytics")}>
               <TbBrandGoogleAnalytics size={20} /> Analytics

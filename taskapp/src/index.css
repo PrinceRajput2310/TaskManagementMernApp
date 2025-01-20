@@ -59,3 +59,11 @@ position: relative;
 top: 8rem;
  }
 }
+
+.user-create-feed-section-container{
+  /* background-color: #4DB8FF; */
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

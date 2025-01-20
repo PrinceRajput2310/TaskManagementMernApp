@@ -6,6 +6,7 @@ import Home from "../components/Home";
 import AdminPage from "../components/AdminPage";
 import Analytics from "../components/Analytics";
 import Profile from "../components/Profile";
+import FeedSection from "../pages/FeedSection";
 import withAuth from "../hoc/auth";
 
 const AllRoutes = () => {
@@ -18,6 +19,7 @@ const AllRoutes = () => {
         <Route path="/analytics" Component={withAuth(Analytics)} />
         <Route path="/profile" Component={withAuth(Profile)} />
         <Route path="/home" Component={withAuth(Home)} />
+        <Route path="/feed" Component={withAuth(FeedSection)} />
       </Routes>
     </>
   );

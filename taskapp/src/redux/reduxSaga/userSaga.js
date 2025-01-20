@@ -4,6 +4,9 @@ import {
   allUsersFailure,
   allUsersRequest,
   allUsersSuccess,
+  createUserFeedFailure,
+  createUserFeedRequest,
+  createUserFeedSuccess,
   logoutUserFailure,
   logoutUserRequest,
   logoutUserSuccess,
@@ -19,6 +22,9 @@ import {
   userSignupFailure,
   userSignupRequest,
   userSignupSuccess,
+  getAllUserFeedFailure,
+  getAllUserFeedSuccess,
+  getAllUserFeedRequest,
 } from "../reduxSlice/userSlice.js";
 import API_ENDPOINT from "../../utils/apiEndPoints";
 
@@ -155,6 +161,51 @@ function* myCompletedTaskRankSaga() {
   }
 }
 
+// create user feed
+function* createUserFeedSaga(action) {
+  console.log("------------user feed saga action", action);
+  try {
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("description", action.payload.description);
+    formData.append("image", action.payload.profileImage);
+    const response = yield call(
+      axios.post,
+      `${API_ENDPOINT.createUserFeed}`,
+      formData,
+      {
+        withCredentials: true,
+        headers: {
+          // "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    yield put(createUserFeedSuccess(response.data));
+    yield put(getAllUserFeedRequest());
+  } catch (error) {
+    yield put(createUserFeedFailure(error.message));
+  }
+}
+
+// get All user created feeds
+
+function* getAllUserFeedskSaga() {
+  try {
+    const token = localStorage.getItem("token");
+    const response = yield call(axios.get, `${API_ENDPOINT.getAllUserFeeds}`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    yield put(getAllUserFeedSuccess(response.data));
+  } catch (error) {
+    yield put(getAllUserFeedFailure(error.message));
+  }
+}
+
 export default function* userSaga() {
   yield takeEvery(userLoginRequest.type, login);
   yield takeEvery(userSignupRequest.type, signup);
@@ -162,4 +213,6 @@ export default function* userSaga() {
   yield takeEvery(logoutUserRequest.type, logoutUserSaga);
   yield takeEvery(userAnalyticsRequest.type, userAnalyticsSaga);
   yield takeEvery(myScoreRankRequest.type, myCompletedTaskRankSaga);
+  yield takeEvery(createUserFeedRequest.type, createUserFeedSaga);
+  yield takeEvery(getAllUserFeedRequest.type, getAllUserFeedskSaga);
 }
