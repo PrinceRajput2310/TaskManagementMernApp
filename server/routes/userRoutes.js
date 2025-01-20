@@ -9,6 +9,7 @@ import {
   getYourScoreData,
 } from "../controllers/userControllers.js";
 import { isAuthenticatedUser } from "../middleware/userAuth.js";
+import { createUserFeed, getAllUsersFeeds, upload } from "../controllers/userFeedController.js";
 
 const router = express.Router();
 
@@ -19,5 +20,13 @@ router.route("/user").get(getSingleUserDetail);
 router.route("/logout").get(logoutUser);
 router.route("/user/analytics").get(userAnalytics);
 router.route("/user/myscore").get(isAuthenticatedUser, getYourScoreData);
+router.post(
+  "/user/feed",
+  isAuthenticatedUser,
+  upload.single("image"),
+  createUserFeed
+);
+
+router.get("/user/allfeeds",isAuthenticatedUser,getAllUsersFeeds)
 
 export default router;
