@@ -52,6 +52,7 @@ const FeedSection = () => {
     <div>
       <Header />
       <div className="user-create-feed-section-container">
+        <h3 style={{ textAlign: "center",fontFamily:'sans-serif' }}>Create Content</h3>
         <Form onSubmit={createUserFeed}>
           <Form.Group className="mb-3" controlId="formBasicDescription">
             <Form.Label>Add description</Form.Label>
@@ -75,7 +76,7 @@ const FeedSection = () => {
             <img src={profileImagePreview} alt="Preview" width="100" />
           )}
           <Button variant="primary" type="submit">
-            Create feed
+            Create post
           </Button>
         </Form>
       </div>

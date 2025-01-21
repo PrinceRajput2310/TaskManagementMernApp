@@ -111,8 +111,12 @@ const Home = () => {
           gap: "15px",
           marginLeft: "auto",
           marginRight: "auto",
+          marginTop:'20px',
           // backgroundColor:'tomato',
           padding: "20px",
+          border: "1px solid #e0e0e0",
+          borderRadius: "12px", 
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)",
         }}
       >
         <div>Enter Task Title</div>

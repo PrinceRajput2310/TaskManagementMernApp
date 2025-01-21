@@ -12,6 +12,7 @@ import {
   deleteTaskRequest,
 } from "../redux/reduxSlice/taskSlice";
 import { useDispatch } from "react-redux";
+import DeleteTaskModel from "../commonComponents/DeleteModel";
 
 const { TextArea } = Input;
 
@@ -24,7 +25,20 @@ const DisplayTask = ({ todos }) => {
   const [defaultPriority, setDefaultPriority] = useState("");
   const [newStaus, setNewStatus] = useState("");
   const [newPriority, setNewPriority] = useState("");
+  const [deletedTaskTitle, setDeletedTaskTitle] = useState("");
+  const [deletedTaskId, setDeletedTaskId] = useState("");
   const dispatch = useDispatch();
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => {
+    setShow(false);
+  };
+  const handleShow = (title, id) => {
+    setDeletedTaskTitle(title);
+    setDeletedTaskId(id);
+    setShow(true);
+  };
 
   const showModal = (title, content, id, status, priority) => {
     setNewTitle(title);
@@ -50,8 +64,9 @@ const DisplayTask = ({ todos }) => {
     setIsModalOpen(false);
   };
 
-  const handleDelete = (id) => {
-    dispatch(deleteTaskRequest({ id }));
+  const handleDelete = () => {
+    dispatch(deleteTaskRequest({ id: deletedTaskId }));
+    setShow(false);
   };
 
   const onChange = (value) => {
@@ -69,7 +84,7 @@ const DisplayTask = ({ todos }) => {
   const onSearchPriority = (value) => {
     console.log("search:", value);
   };
-  console.log("--------", defaultPriority, defaultStatus, newTitle, newTodo);
+  console.log("------- deleted task id-", deletedTaskId);
   return (
     <>
       <div
@@ -118,7 +133,10 @@ const DisplayTask = ({ todos }) => {
                             >
                               <FaEdit size={20} /> Edit
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleDelete(_id)}>
+                            <Dropdown.Item
+                              // onClick={() => handleDelete(_id)}
+                              onClick={() => handleShow(title, _id)}
+                            >
                               <MdDelete size={20} /> Delete
                             </Dropdown.Item>
                           </DropdownButton>
@@ -224,6 +242,16 @@ const DisplayTask = ({ todos }) => {
           />
         </div>
       </Modal>
+
+      {/* Delete Task Model */}
+
+      <DeleteTaskModel
+        deletedTaskTitle={deletedTaskTitle}
+        handleClose={handleClose}
+        handleShow={handleShow}
+        handleDelete={handleDelete}
+        show={show}
+      />
     </>
   );
 };
